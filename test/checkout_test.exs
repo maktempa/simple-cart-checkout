@@ -17,18 +17,18 @@ defmodule CheckoutTest do
   end
 
   describe "checkout new carts" do
-    test "returns 0 price for an empty cart" do
+    test "returns 0.00 price for an empty cart" do
       checkout = checkout([])
       assert checkout == {:ok, Decimal.new("0.00")}
     end
 
     @tag products: "GR1"
-    test "calculates total price for a single product", %{total: total} do
+    test "calculates total price for a single product list", %{total: total} do
       assert total == {:ok, Decimal.new("3.11")}
     end
 
-    test "calculates total price for a single product list" do
-      checkout = checkout(["GR1"])
+    test "calculates total price for a single product string" do
+      checkout = checkout("GR1")
       assert checkout == {:ok, Decimal.new("3.11")}
     end
 

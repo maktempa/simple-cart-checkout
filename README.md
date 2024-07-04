@@ -1,21 +1,37 @@
 # Cart
 
-**TODO: Add description**
+Simple function to checkout products with applied discount rules.
+Stores cart information in ETS so products can be added to cart at any point after creation.
+
+
+  Function: checkout/3
+  Returns: {:ok, total_price} or {:error, reason}
+
+  Examples:
+      create cart and return total price with default discounts:
+        checkout(["GR1", "SR1", "GR1", "CF1"])
+
+      create cart with id if doesn't exist / reads from ETS if exists and return total price with default discounts:
+        checkout(["GR1", "SR1", "GR1", "CF1"],  cart_id)
+
+      calculate price for empty cart
+        checkout([], %{id: cart_id})
+
+      create cart and return total price with custom discounts:
+        checkout(["GR1", "SR1", "GR1", "CF1"], nil, discount_list)
+
+      create/reads cart and override default discounts and return total price with custom discounts:
+        checkout(["GR1", "SR1", "GR1", "CF1"], %{id: cart_id}, discount_list)
 
 ## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `cart` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:cart, "~> 0.1.0"}
-  ]
-end
+```bash
+mix deps.get
 ```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/cart>.
-
+### To run project with iex.
+```bash
+iex -S mix
+```
+### To run tests
+```bash
+mix test
+```

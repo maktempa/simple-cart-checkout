@@ -3,8 +3,8 @@ defmodule Checkout do
   Module for Cart struct and context. In real application, this module would be splitted in 2 parts: Cart schema and Cart context.
   Also in real app cart could has user assigned (e.g. when buyer using personal loyality card)
 
-  Creating cart isn't required by task, but cart info (such as products and discounts) could be used with minor code changes.
-
+  Creating cart isn't required, but cart info (such as products and discounts) could be used with minor code changes.
+  Allows add products to existing cart and recalculate total price. Removing products from cart isn't implemented
 
   N.B. discount application isn't commutative/associative operation, so order of discounts in list_of_cart_discounts is important
   E.g. if you have 2 discounts:
@@ -22,7 +22,8 @@ defmodule Checkout do
           id: String.t(),
           total: Decimal.t(),
           list_products_in_cart: [String.t()],
-          list_of_cart_discounts: [fun()]
+          list_of_cart_discounts: [fun()],
+          list_of_applied_discounts: [String.t()]
         }
 
   defstruct id: "",
@@ -52,9 +53,10 @@ defmodule Checkout do
   @doc """
   Calculate total price of products in cart.
 
-  Args: products - product or list of products to be added to cart.
-        cart - cart struct, can be %{id: cart_id}, nil or just skipped
-        discounts - list of discounts to be applied to cart. If nil, default discounts will be used.
+  ## Parameters
+    - `products`(required) - product or list of products to be added to cart (strings or empty list).
+    - `cart` - cart info, can be %{id: cart_id}, id string, nil or just skipped
+     - `discounts` - list of discounts to be applied to cart - list if discount maps If nil, default discounts will be used.
           If list of discounts is passed, it will overwrite existing cart's discount
 
   Returns: {:ok, total_price} or {:error, reason}
@@ -171,7 +173,7 @@ defmodule Checkout do
 
     case cart_base_price do
       {:error, product} ->
-        Logger.error("checkout error creating cart - product not found: #{inspect(product)}")
+        Logger.warning("checkout error creating cart - product not found: #{inspect(product)}")
         {:error, "product not found"}
 
       {:ok, base_price} ->
